@@ -14,19 +14,28 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
 
   const onSubmit = async (data) => {
-    console.log('📤 Enviando:', data)
     setLoading(true)
     try {
       const res = await api.post('/auth/login', data)
-      console.log('✅ Respuesta:', res.data)
       login(res.data)
       toast.success(`¡Bienvenida, ${res.data.nombre}! 🌸`)
       const rol = res.data.rol
       if (rol === 'CLIENT') navigate('/mis-citas')
       else navigate('/dashboard')
     } catch (e) {
-      console.error('❌ Error:', e.response?.data || e.message)
-      toast.error('Correo o contraseña incorrectos')
+      const msg = e.response?.data?.message || e.response?.data?.error || e.message
+      const status = e.response?.status
+      const isWrongCredentials = status === 401 || status === 403 ||
+        (msg && (String(msg).includes('Credenciales incorrectas') || String(msg).includes('Usuario inactivo')))
+      if (e.code === 'ERR_NETWORK' || !e.response) {
+        toast.error('No se pudo conectar al servidor. Revisa que el backend esté en marcha y CORS configurado.')
+      } else if (status === 404) {
+        toast.error('Ruta no encontrada. Despliega el backend "lashes-backend" en Render y usa esa URL en el frontend.')
+      } else if (isWrongCredentials) {
+        toast.error(msg || 'Correo o contraseña incorrectos')
+      } else {
+        toast.error(msg || 'Error al iniciar sesión')
+      }
     } finally {
       setLoading(false)
     }

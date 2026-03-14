@@ -1,11 +1,13 @@
 import axios from 'axios'
 
-const isProduction = process.env.NODE_ENV === 'production'
+const getBaseURL = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL
+  if (import.meta.env.DEV) return 'http://localhost:8080/api'
+  return 'https://lashes-backend-2h3o.onrender.com/api'
+}
 
 const api = axios.create({
-  baseURL: isProduction
-    ? 'https://bethlashes-backend-zs7k.onrender.com/api'  
-    : '/api',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json'
   }
