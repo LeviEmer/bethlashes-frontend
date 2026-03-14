@@ -1,0 +1,8 @@
+Stack: React 18 + Vite + TailwindCSS + react-hook-form + zod + axios
+Auth: JWT en AuthContext con ProtectedRoute (react-router-dom v6)
+API: axios instance con baseURL desde import.meta.env.VITE_API_URL
+Roles: ADMIN_DEV, ADMIN_OPERATOR, CLIENT
+Notificaciones: react-hot-toast
+Íconos: Heroicons
+No usar fetch nativo, siempre axios
+Seguir el mismo patrón de componentes existentes en src/pagesñ

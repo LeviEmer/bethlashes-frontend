@@ -26,9 +26,14 @@ export default function Navbar() {
             </Link>
           )}
           {isAdmin() && (
-            <Link to="/dashboard" className="text-sm text-gray-600 hover:text-rose-dark font-medium transition">
-              Dashboard
-            </Link>
+            <>
+              <Link to="/dashboard" className="text-sm text-gray-600 hover:text-rose-dark font-medium transition">
+                Dashboard
+              </Link>
+              <Link to="/reportes" className="text-sm text-gray-600 hover:text-rose-dark font-medium transition">
+                📋 Reportes
+              </Link>
+            </>
           )}
           {isDev() && (
             <Link to="/slots" className="text-sm text-gray-600 hover:text-rose-dark font-medium transition">

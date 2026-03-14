@@ -2,6 +2,7 @@ import Dashboard from './pages/admin/Dashboard'
 import GestionSlots from './pages/admin/GestionSlots'
 import GestionUsuarios from './pages/admin/GestionUsuarios'
 import GestionServicios from './pages/admin/GestionServicios'
+import ReportesPage from './pages/admin/ReportesPage'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -56,6 +57,11 @@ function AppRoutes() {
       <Route path="/servicios" element={
         <ProtectedRoute roles={['ADMIN_DEV']}>
           <GestionServicios />
+        </ProtectedRoute>
+      }/>
+      <Route path="/reportes" element={
+        <ProtectedRoute roles={['ADMIN_OPERATOR', 'ADMIN_DEV']}>
+          <ReportesPage />
         </ProtectedRoute>
       }/>
     </Routes>

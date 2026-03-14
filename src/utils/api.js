@@ -4,7 +4,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 const api = axios.create({
   baseURL: isProduction
-    ? 'https://lashes-backend-2h3o.onrender.com/api'  
+    ? 'https://bethlashes-backend-zs7k.onrender.com/api'  
     : '/api',
   headers: {
     'Content-Type': 'application/json'
