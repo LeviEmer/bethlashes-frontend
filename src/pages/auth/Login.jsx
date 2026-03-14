@@ -7,25 +7,25 @@ import toast from 'react-hot-toast'
 
 export default function Login() {
   const { register, handleSubmit, formState: { errors, isValid } } = useForm({
-    mode: 'onChange' // ← valida en tiempo real
+    mode: 'onChange'
   })
   const { login } = useAuth()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
 
   const onSubmit = async (data) => {
-    console.log('📤 Enviando:', data) // ← debug
+    console.log('📤 Enviando:', data)
     setLoading(true)
     try {
       const res = await api.post('/auth/login', data)
-      console.log('✅ Respuesta:', res.data) // ← debug
+      console.log('✅ Respuesta:', res.data)
       login(res.data)
       toast.success(`¡Bienvenida, ${res.data.nombre}! 🌸`)
       const rol = res.data.rol
       if (rol === 'CLIENT') navigate('/mis-citas')
       else navigate('/dashboard')
     } catch (e) {
-      console.error('❌ Error:', e.response?.data || e.message) // ← debug
+      console.error('❌ Error:', e.response?.data || e.message)
       toast.error('Correo o contraseña incorrectos')
     } finally {
       setLoading(false)
