@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
-import api from '../../api/axios'
+import api from '../../utils/api'
 import toast from 'react-hot-toast'
 
 const BadgeEstado = ({ estado }) => {
@@ -25,6 +25,8 @@ export default function Dashboard() {
   const [slots, setSlots] = useState([])
   const [nuevoSlotId, setNuevoSlotId] = useState('')
   const [motivo, setMotivo] = useState('')
+  const [filtroEstado, setFiltroEstado] = useState('TODOS')
+  const [busqueda, setBusqueda] = useState('')
 
   useEffect(() => {
     cargarDatos()
@@ -97,13 +99,34 @@ export default function Dashboard() {
   const confirmadas = todasCitas.filter(c => c.estado === 'CONFIRMADA').length
   const canceladas = todasCitas.filter(c => c.estado === 'CANCELADA').length
 
+  const citasFiltradas = todasCitas
+    .filter(c => filtroEstado === 'TODOS' || c.estado === filtroEstado)
+    .filter(c => c.clienteNombre?.toLowerCase().includes(busqueda.toLowerCase()))
+
   return (
     <div className="min-h-screen bg-rose-light">
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 py-8">
 
-        {/* KPIs */}
         <h2 className="font-display text-3xl font-bold text-rose-dark mb-6">Panel de Control</h2>
+
+        {/* Accesos rápidos */}
+        <div className="flex gap-3 mb-6 flex-wrap">
+          <a href="/slots" className="btn-secondary text-sm">
+            🗓️ Gestionar Slots
+          </a>
+          <a href="/usuarios" className="btn-secondary text-sm">
+            👥 Usuarios
+          </a>
+          <a href="/servicios" className="btn-secondary text-sm">
+            💆 Servicios
+          </a>
+          <a href="/reportes" className="btn-secondary text-sm">
+            📊 Reportes
+          </a>
+        </div>
+
+        {/* KPIs */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
             { label: 'Citas hoy', value: citasHoy.length, icon: '📅' },
@@ -148,18 +171,50 @@ export default function Dashboard() {
         {/* Todas las citas */}
         <div>
           <h3 className="font-display text-xl font-bold text-gray-800 mb-4">Todas las Citas</h3>
-          <div className="space-y-3">
-            {todasCitas.map(cita => (
-              <CitaCard
-                key={cita.id}
-                cita={cita}
-                formatFecha={formatFecha}
-                onConfirmar={confirmar}
-                onCancelar={cancelar}
-                onReprogramar={abrirReprogramar}
-              />
-            ))}
+          <div className="flex flex-wrap gap-3 mb-4">
+            <input
+              type="text"
+              placeholder="🔍 Buscar por cliente..."
+              className="input-field w-full sm:w-64"
+              value={busqueda}
+              onChange={e => setBusqueda(e.target.value)}
+            />
+            <div className="flex gap-2 flex-wrap">
+              {['TODOS', 'PENDIENTE', 'CONFIRMADA', 'CANCELADA', 'REPROGRAMADA'].map(estado => (
+                <button
+                  key={estado}
+                  onClick={() => setFiltroEstado(estado)}
+                  className={`text-xs font-semibold px-3 py-1 rounded-full border transition ${
+                    filtroEstado === estado
+                      ? 'bg-rose-dark text-white border-rose-dark'
+                      : 'bg-white text-gray-600 border-gray-300 hover:border-rose-dark'
+                  }`}
+                >
+                  {estado}
+                </button>
+              ))}
+            </div>
           </div>
+
+          {citasFiltradas.length === 0 ? (
+            <div className="card text-center py-8">
+              <p className="text-4xl mb-2">🔍</p>
+              <p className="text-gray-400">No hay citas con ese filtro</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {citasFiltradas.map(cita => (
+                <CitaCard
+                  key={cita.id}
+                  cita={cita}
+                  formatFecha={formatFecha}
+                  onConfirmar={confirmar}
+                  onCancelar={cancelar}
+                  onReprogramar={abrirReprogramar}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import toast from 'react-hot-toast'
 
 export default function Navbar() {
-  const { user, logout, isAdmin } = useAuth()
+  const { user, logout, isAdmin, isDev } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -23,6 +23,16 @@ export default function Navbar() {
           {!isAdmin() && (
             <Link to="/agendar" className="text-sm text-gray-600 hover:text-rose-dark font-medium transition">
               Agendar cita
+            </Link>
+          )}
+          {isAdmin() && (
+            <Link to="/dashboard" className="text-sm text-gray-600 hover:text-rose-dark font-medium transition">
+              Dashboard
+            </Link>
+          )}
+          {isDev() && (
+            <Link to="/slots" className="text-sm text-gray-600 hover:text-rose-dark font-medium transition">
+              🗓️ Slots
             </Link>
           )}
           <span className="text-sm text-gray-500 hidden sm:block">

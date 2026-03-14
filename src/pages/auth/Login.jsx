@@ -2,25 +2,30 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '../../context/AuthContext'
-import api from '../../api/axios'
+import api from '../../utils/api'
 import toast from 'react-hot-toast'
 
 export default function Login() {
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, formState: { errors, isValid } } = useForm({
+    mode: 'onChange' // ← valida en tiempo real
+  })
   const { login } = useAuth()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
 
   const onSubmit = async (data) => {
+    console.log('📤 Enviando:', data) // ← debug
     setLoading(true)
     try {
       const res = await api.post('/auth/login', data)
+      console.log('✅ Respuesta:', res.data) // ← debug
       login(res.data)
       toast.success(`¡Bienvenida, ${res.data.nombre}! 🌸`)
       const rol = res.data.rol
       if (rol === 'CLIENT') navigate('/mis-citas')
       else navigate('/dashboard')
     } catch (e) {
+      console.error('❌ Error:', e.response?.data || e.message) // ← debug
       toast.error('Correo o contraseña incorrectos')
     } finally {
       setLoading(false)
@@ -39,25 +44,45 @@ export default function Login() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
             <input
-              {...register('email', { required: true })}
+              {...register('email', { 
+                required: 'Correo requerido',
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: 'Correo inválido'
+                }
+              })}
               type="email"
               placeholder="tu@correo.com"
-              className="input-field"
+              className={`w-full input-field ${errors.email ? 'border-red-500' : ''}`}
             />
+            {errors.email && (
+              <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+            )}
           </div>
+          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
             <input
-              {...register('password', { required: true })}
+              {...register('password', { 
+                required: 'Contraseña requerida',
+                minLength: {
+                  value: 6,
+                  message: 'Mínimo 6 caracteres'
+                }
+              })}
               type="password"
               placeholder="••••••••"
-              className="input-field"
+              className={`w-full input-field ${errors.password ? 'border-red-500' : ''}`}
             />
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+            )}
           </div>
+          
           <button
             type="submit"
-            disabled={loading}
-            className="btn-primary w-full mt-2"
+            disabled={loading || !isValid}
+            className="btn-primary w-full mt-2 disabled:opacity-50"
           >
             {loading ? 'Ingresando...' : 'Ingresar'}
           </button>

@@ -1,4 +1,8 @@
 import Dashboard from './pages/admin/Dashboard'
+import GestionSlots from './pages/admin/GestionSlots'
+import GestionUsuarios from './pages/admin/GestionUsuarios'
+import GestionServicios from './pages/admin/GestionServicios'
+import ReportesPage from './pages/admin/ReportesPage'  // ← nuevo
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -35,13 +39,31 @@ function AppRoutes() {
           <Agendar />
         </ProtectedRoute>
       }/>
-      {
-        <Route path="/dashboard" element={
-  <ProtectedRoute roles={['ADMIN_OPERATOR', 'ADMIN_DEV']}>
-    <Dashboard />
-  </ProtectedRoute>
-}/>
-      }
+      <Route path="/dashboard" element={
+        <ProtectedRoute roles={['ADMIN_OPERATOR', 'ADMIN_DEV']}>
+          <Dashboard />
+        </ProtectedRoute>
+      }/>
+      <Route path="/slots" element={
+        <ProtectedRoute roles={['ADMIN_DEV']}>
+          <GestionSlots />
+        </ProtectedRoute>
+      }/>
+      <Route path="/usuarios" element={
+        <ProtectedRoute roles={['ADMIN_OPERATOR', 'ADMIN_DEV']}>
+          <GestionUsuarios />
+        </ProtectedRoute>
+      }/>
+      <Route path="/servicios" element={
+        <ProtectedRoute roles={['ADMIN_DEV']}>
+          <GestionServicios />
+        </ProtectedRoute>
+      }/>
+      <Route path="/reportes" element={       // ← nuevo
+        <ProtectedRoute roles={['ADMIN_OPERATOR', 'ADMIN_DEV']}>
+          <ReportesPage />
+        </ProtectedRoute>
+      }/>
     </Routes>
   )
 }
