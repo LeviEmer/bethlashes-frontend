@@ -121,9 +121,7 @@ export default function Dashboard() {
           <a href="/servicios" className="btn-secondary text-sm">
             💆 Servicios
           </a>
-          <a href="/reportes" className="btn-secondary text-sm">
-            📊 Reportes
-          </a>
+          
         </div>
 
         {/* KPIs */}
